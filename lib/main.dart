@@ -3,13 +3,17 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:practice_project/screens/home_screen.dart';
+import 'models/notes_model.dart';
 
 void main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await Hive.initFlutter();
-  await Hive.openBox('shopping_box');
+  var directory = await getApplicationDocumentsDirectory();
+   Hive.init(directory.path);
+  Hive.registerAdapter(NotesModelAdapter());
+  await Hive.openBox<NotesModel>('notes');
   runApp(const MyApp());
 }
 
