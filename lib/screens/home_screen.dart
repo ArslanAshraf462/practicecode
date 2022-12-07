@@ -27,65 +27,86 @@ class _HomeScreenState extends State<HomeScreen> {
 //     print("Amount data is ${item}");
 // }
 
-
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content:  Text('Do you want to exit an App'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child:  Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Hive'),
-      ),
-      body: ValueListenableBuilder<Box<NotesModel>>(
-          valueListenable: Boxes.getData().listenable(),
-          builder: (context, box, _) {
-            var data= box.values.toList().cast<NotesModel>();
-            return ListView.builder(
-              itemCount: box.length,
-              itemBuilder: (context, index) {
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(data[index].title.toString(),
-                            style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w500 , color: Colors.black),),
-                          Spacer(),
-                          InkWell(
-                              onTap: () {
-                                delete(data[index]);
-                              },
-                              child: Icon(Icons.delete,color: Colors.red,)),
-                          SizedBox(width: 15,),
-                          InkWell(
-                              onTap: () {
-                                _editDialog(
-                                    data[index],
-                                    data[index].title.toString(),
-                                    data[index].description.toString(),
-                                );
-                              },
-                              child: Icon(Icons.edit)),
-                        ],
-                      ),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Hive'),
+        ),
+        body: ValueListenableBuilder<Box<NotesModel>>(
+            valueListenable: Boxes.getData().listenable(),
+            builder: (context, box, _) {
+              var data= box.values.toList().cast<NotesModel>();
+              return ListView.builder(
+                itemCount: box.length,
+                itemBuilder: (context, index) {
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(data[index].title.toString(),
+                              style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w500 , color: Colors.black),),
+                            Spacer(),
+                            InkWell(
+                                onTap: () {
+                                  delete(data[index]);
+                                },
+                                child: Icon(Icons.delete,color: Colors.red,)),
+                            SizedBox(width: 15,),
+                            InkWell(
+                                onTap: () {
+                                  _editDialog(
+                                      data[index],
+                                      data[index].title.toString(),
+                                      data[index].description.toString(),
+                                  );
+                                },
+                                child: Icon(Icons.edit)),
+                          ],
+                        ),
 
-                      Text(data[index].description.toString(),
-                        style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w300, color: Colors.grey),
-                      ),
-                    ],
+                        Text(data[index].description.toString(),
+                          style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w300, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },);
-          },),
-      floatingActionButton: FloatingActionButtonWidget(
-          onPressed: () async{
-            _showMyDialog();
-          },
+                );
+              },);
+            },),
+        floatingActionButton: FloatingActionButtonWidget(
+            onPressed: () async{
+              _showMyDialog();
+            },
+        ),
       ),
     );
   }
