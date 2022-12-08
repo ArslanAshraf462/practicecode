@@ -5,7 +5,10 @@ import 'package:practice_project/boxes/boxes.dart';
 import 'package:practice_project/models/notes_model.dart';
 
 
-import '../widgets/floating_action_button_widget.dart';
+import '../../utilities/app_color.dart';
+import '../../utilities/app_strings.dart';
+import 'components/floating_action_button_widget.dart';
+import 'components/text_Widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,16 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return (await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Are you sure?'),
-        content:  Text('Do you want to exit an App'),
+        title: Text(AppStrings.backButtonSureText),
+        content:  Text(AppStrings.backButtonSureTextPermission),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No'),
+            child: Text(AppStrings.noText),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child:  Text('Yes'),
+            child:  Text(AppStrings.yesText),
           ),
         ],
       ),
@@ -54,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Hive'),
+          title: Text(AppStrings.homeAppBarText),
         ),
         body: ValueListenableBuilder<Box<NotesModel>>(
             valueListenable: Boxes.getData().listenable(),
@@ -72,14 +75,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           children: [
-                            Text(data[index].title.toString(),
-                              style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w500 , color: Colors.black),),
+                            TextWidget(name: data[index].title.toString(),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                              color: AppColors.titleColor,
+                              ),
                             Spacer(),
                             InkWell(
                                 onTap: () {
                                   delete(data[index]);
                                 },
-                                child: Icon(Icons.delete,color: Colors.red,)),
+                                child: Icon(Icons.delete,color: AppColors.deleteIconColor,)),
                             SizedBox(width: 15,),
                             InkWell(
                                 onTap: () {
@@ -92,9 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Icon(Icons.edit)),
                           ],
                         ),
-
-                        Text(data[index].description.toString(),
-                          style: TextStyle(fontSize: 18 , fontWeight: FontWeight.w300, color: Colors.grey),
+                        TextWidget(name: data[index].description.toString(),
+                          fontWeight: FontWeight.w300,
+                          fontSize: 18,
+                          color: AppColors.descriptionColor,
                         ),
                       ],
                     ),
@@ -122,14 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder:(context){
           return AlertDialog(
-            title: Text('Edit NOTES'),
+            title: Text(AppStrings.editNotesText),
             content: SingleChildScrollView(
               child: Column(
                 children: [
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                        hintText: 'Enter title',
+                        hintText: AppStrings.hintTitleText,
                         border: OutlineInputBorder()
                     ),
                   ),
@@ -137,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: const InputDecoration(
-                        hintText: 'Enter description',
+                        hintText: AppStrings.hintDescriptionText,
                         border: OutlineInputBorder()
                     ),
                   )
@@ -148,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
               TextButton(onPressed: (){
 
                 Navigator.pop(context);
-              }, child: const Text('Cancel')),
+              }, child: const Text(AppStrings.cancelButtonText)),
 
               TextButton(onPressed: (){
                 notesModel.title=_nameController.text.toString();
@@ -157,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _nameController.clear();
                 _descriptionController.clear();
                 Navigator.pop(context);
-              }, child: Text('Edit')),
+              }, child: Text(AppStrings.editButtonText)),
             ],
           );
         }
@@ -170,14 +177,14 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder:(context){
           return AlertDialog(
-            title: Text('Add NOTES'),
+            title: Text(AppStrings.addNotesText),
             content: SingleChildScrollView(
               child: Column(
                 children: [
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                        hintText: 'Enter title',
+                        hintText: AppStrings.hintTitleText,
                         border: OutlineInputBorder()
                     ),
                   ),
@@ -185,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: const InputDecoration(
-                        hintText: 'Enter description',
+                        hintText: AppStrings.hintDescriptionText,
                         border: OutlineInputBorder()
                     ),
                   )
@@ -195,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               TextButton(onPressed: (){
                 Navigator.pop(context);
-              }, child: const Text('Cancel')),
+              }, child: const Text(AppStrings.cancelButtonText)),
 
               TextButton(onPressed: (){
                 final data = NotesModel(title: _nameController.text,
@@ -212,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // box.
 
                 Navigator.pop(context);
-              }, child: Text('Add')),
+              }, child: Text(AppStrings.addButtonText)),
             ],
           );
         }
